@@ -1,0 +1,112 @@
+<mujoco model="manufacturing_sort">
+
+  <include file="panda.xml"/>
+
+  <option timestep="0.002" gravity="0 0 -9.81"/>
+
+  <asset>
+    <texture name="tex_floor" type="2d" builtin="checker"
+             rgb1="0.6 0.6 0.6" rgb2="0.7 0.7 0.7" width="512" height="512"/>
+    <material name="mat_floor" texture="tex_floor" texrepeat="5 5"/>
+    <texture name="tex_conv" type="2d" builtin="checker"
+             rgb1="0.3 0.3 0.3" rgb2="0.5 0.5 0.5" width="64" height="64"/>
+    <material name="mat_conv" texture="tex_conv" texrepeat="4 4"/>
+  </asset>
+
+  <worldbody>
+
+    <geom name="floor" type="plane" size="3 3 0.1"
+          material="mat_floor" condim="3"/>
+
+    <!-- 
+      CONVEYOR SYSTEM
+      ===============
+      The belt is a moving surface that slides on a slider joint.
+      A motor actuator drives it continuously at constant velocity.
+      Objects on top experience real friction and are pushed.
+    -->
+
+    <!-- Conveyor frame (static) -->
+    <body name="conveyor_frame" pos="0.55 0 0.20">
+      <!-- Base/structure -->
+      <geom name="conv_body" type="box" size="0.20 0.10 0.16"
+            rgba="0.25 0.25 0.25 1" pos="0 0 -0.14"/>
+      <!-- Support legs -->
+      <geom type="cylinder" size="0.014 0.09" rgba="0.2 0.2 0.2 1" pos=" 0.17  0.08 -0.28"/>
+      <geom type="cylinder" size="0.014 0.09" rgba="0.2 0.2 0.2 1" pos=" 0.17 -0.08 -0.28"/>
+      <geom type="cylinder" size="0.014 0.09" rgba="0.2 0.2 0.2 1" pos="-0.17  0.08 -0.28"/>
+      <geom type="cylinder" size="0.014 0.09" rgba="0.2 0.2 0.2 1" pos="-0.17 -0.08 -0.28"/>
+    </body>
+
+    <!-- MOVING BELT SURFACE -->
+    <!-- This body slides along X, carrying objects via friction -->
+    <body name="conveyor_belt" pos="0.35 0 0.22">
+      <joint name="belt_slide" type="slide" axis="1 0 0" 
+             range="0 0.40" damping="0.01"/>
+      <geom name="conv_top" type="box" size="0.20 0.10 0.02"
+            material="mat_conv" pos="0 0 0" 
+            friction="1.5 0.1 0.01" condim="3"/>
+    </body>
+
+    <!-- ===== TOOLS ===== -->
+    <!-- Tools start parked high above, then drop onto belt -->
+
+    <body name="spanner" pos="0 0 10">
+      <freejoint name="spanner_joint"/>
+      <geom name="spanner_handle" type="capsule" size="0.008 0.055"
+            rgba="0.60 0.60 0.65 1" mass="0.25"
+            friction="1.0 0.1 0.01"/>
+      <geom name="spanner_jaw_l" type="box" size="0.006 0.018 0.008"
+            pos="0.014 0.008 0.065" rgba="0.55 0.55 0.60 1" mass="0.05"
+            friction="1.0 0.1 0.01"/>
+      <geom name="spanner_jaw_r" type="box" size="0.006 0.018 0.008"
+            pos="-0.014 0.008 0.065" rgba="0.55 0.55 0.60 1" mass="0.05"
+            friction="1.0 0.1 0.01"/>
+    </body>
+
+    <body name="nut" pos="0 0 10">
+      <freejoint name="nut_joint"/>
+      <geom name="nut_body" type="cylinder" size="0.018 0.007"
+            rgba="0.80 0.75 0.10 1" mass="0.05"
+            friction="1.0 0.1 0.01"/>
+    </body>
+
+    <body name="bolt" pos="0 0 10">
+      <freejoint name="bolt_joint"/>
+      <geom name="bolt_shaft" type="capsule" size="0.006 0.028"
+            rgba="0.60 0.60 0.65 1" mass="0.04"
+            friction="1.0 0.1 0.01"/>
+      <geom name="bolt_head" type="cylinder" size="0.011 0.005"
+            pos="0 0 0.033" rgba="0.70 0.70 0.75 1" mass="0.01"
+            friction="1.0 0.1 0.01"/>
+    </body>
+
+    <!-- ===== BINS ===== -->
+
+    <body name="bin_red" pos="0.22 0.57 0.0">
+      <geom type="box" size="0.10 0.10 0.008" rgba="0.85 0.10 0.10 1" pos="0 0 0"/>
+      <geom type="box" size="0.10 0.008 0.08" rgba="0.85 0.10 0.10 1" pos="0 -0.10 0.08"/>
+      <geom type="box" size="0.10 0.008 0.08" rgba="0.85 0.10 0.10 1" pos="0  0.10 0.08"/>
+      <geom type="box" size="0.008 0.10 0.08" rgba="0.85 0.10 0.10 1" pos="-0.10 0 0.08"/>
+      <geom type="box" size="0.008 0.10 0.08" rgba="0.85 0.10 0.10 1" pos=" 0.10 0 0.08"/>
+    </body>
+
+    <body name="bin_blue" pos="0.65 -0.25 0.0">
+      <geom type="box" size="0.10 0.10 0.008" rgba="0.10 0.10 0.90 1" pos="0 0 0"/>
+      <geom type="box" size="0.10 0.008 0.08" rgba="0.10 0.10 0.90 1" pos="0 -0.10 0.08"/>
+      <geom type="box" size="0.10 0.008 0.08" rgba="0.10 0.10 0.90 1" pos="0  0.10 0.08"/>
+      <geom type="box" size="0.008 0.10 0.08" rgba="0.10 0.10 0.90 1" pos="-0.10 0 0.08"/>
+      <geom type="box" size="0.008 0.10 0.08" rgba="0.10 0.10 0.90 1" pos=" 0.10 0 0.08"/>
+    </body>
+
+  </worldbody>
+
+  <!-- ACTUATORS -->
+  <actuator>
+    <!-- Belt motor: drives the slider joint at constant velocity -->
+    <!-- gear=1, ctrl=velocity in m/s. Positive = +X direction -->
+    <motor name="belt_motor" joint="belt_slide" gear="1" ctrllimited="true" 
+           ctrlrange="-0.3 0.3"/>
+  </actuator>
+
+</mujoco>
