@@ -150,6 +150,33 @@ The system will:
 7. Sort objects into designated bins
 
 ---
+## 🔗 External Resources
+
+### MuJoCo Environment
+
+This project utilizes the MuJoCo physics engine for simulation and robotic manipulation.
+
+**MuJoCo Official Repository:**
+https://github.com/google-deepmind/mujoco
+
+### Franka Panda Robot Model
+
+The Franka Panda manipulator used in this project is based on the official MuJoCo Menagerie robot models.
+
+**MuJoCo Menagerie Repository:**
+https://github.com/google-deepmind/mujoco_menagerie
+
+**Franka Panda Model:**
+https://github.com/google-deepmind/mujoco_menagerie/tree/main/franka_emika_panda
+
+### YOLOS-Tiny Model
+
+The object detection component is powered by the YOLOS-Tiny transformer model.
+
+**Hugging Face Model:**
+https://huggingface.co/hustvl/yolos-tiny
+
+---
 
 ## 📊 Applications
 
